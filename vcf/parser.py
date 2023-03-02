@@ -3,7 +3,6 @@ import collections
 import csv
 import gzip
 import itertools
-import os
 import re
 import sys
 
@@ -398,7 +397,10 @@ class Reader(object):
                         entry_type = 'Flag'
 
             if entry_type == 'Integer':
-                vals = entry[1].split(',')
+                # vals = entry[1].split(',')
+                # SDEV-3534 - '6445|7755898' corrupted format - extra dbSNP ID
+                # split on either , or |
+                vals = re.split(',|\|', entry[1])
                 try:
                     val = self._map(int, vals)
                 # Allow specified integers to be flexibly parsed as floats.
@@ -406,7 +408,10 @@ class Reader(object):
                 except ValueError:
                     val = self._map(float, vals)
             elif entry_type == 'Float':
-                vals = entry[1].split(',')
+                # vals = entry[1].split(',')
+                # SDEV-3534 - '6445|7755898' corrupted format - extra dbSNP ID
+                # split on either , or |
+                vals = re.split(',|\|', entry[1])
                 val = self._map(float, vals)
             elif entry_type == 'Flag':
                 val = True
