@@ -11,3 +11,4 @@ docs/_build
 vcf/cparse.c
 vcf/cparse.so
 .coverage
+venv

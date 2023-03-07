@@ -37,19 +37,19 @@ def walk_together(*readers, **kwargs):
         next_idx_to_k = dict(
             (i, get_key(r)) for i, r in enumerate(nexts) if r is not None)
         keys_with_prev_contig = [
-            k for k in next_idx_to_k.values() if k[0] == min_k[0]]
+            k for k in list(next_idx_to_k.values()) if k[0] == min_k[0]]
 
         if any(keys_with_prev_contig):
             min_k = min(keys_with_prev_contig)   # finish previous contig
         else:
             min_k = min(next_idx_to_k.values())   # move on to next contig
 
-        min_k_idxs = set([i for i, k in next_idx_to_k.items() if k == min_k])
+        min_k_idxs = set([i for i, k in list(next_idx_to_k.items()) if k == min_k])
         yield [nexts[i] if i in min_k_idxs else None for i in range(len(nexts))]
 
         for i in min_k_idxs:
             try:
-                nexts[i] = readers[i].next()
+                nexts[i] = next(readers[i])
             except StopIteration:
                 nexts[i] = None
 
